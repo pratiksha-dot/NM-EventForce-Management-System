@@ -1,58 +1,235 @@
-# Salesforce DX Project
+# EventForce Management System
 
-Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
+## Salesforce Implementation Project
 
-This project template gets you started with the tools and structure you need to build Salesforce applications using source control, scratch orgs, and the Salesforce CLI.
+EventForce Management System is a Salesforce-based event management solution developed to organize and manage events, clients, vendors, venues, and feedback through a centralized CRM platform.
 
-## Prerequisites
+The project demonstrates Salesforce data modeling, automation, Apex development, Lightning App customization, security configuration, testing, reporting, and Git-based version control.
 
-Before you start, make sure you have:
+---
 
-- **Salesforce CLI** - Download from [developer.salesforce.com/tools/salesforcecli](https://developer.salesforce.com/tools/salesforcecli). See [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm) for details.
-- **VS Code with Salesforce Extension Pack** - See [Installation Instructions](https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/install.html) for details. Includes the Agentforce Vibes extension.
-- **A development org** - Sign up for a free Developer Edition org [here](https://developer.salesforce.com/signup).
-- **Dev Hub enabled** (optional, required to create scratch orgs) - You can enable Dev Hub in your development org under Setup > Dev Hub.  See [Provide Developers Access to Salesforce DX Tools](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_dx_tools.htm).
+## Project Objectives
 
-## Project Structure
+The main objectives of the EventForce Management System are:
 
-Your DX project follows this structure:
+- Manage event information in a centralized Salesforce application.
+- Maintain client, vendor, venue, and feedback records.
+- Establish relationships between the major business entities.
+- Automate important event-management activities.
+- Prevent invalid data and duplicate venue bookings.
+- Manage event cancellation requests through an approval process.
+- Provide reminders for upcoming confirmed events.
+- Automatically update past event statuses.
+- Control user access through Salesforce security features.
+- Provide reports and dashboards for operational monitoring.
 
-- **`force-app/main/default/`** - Your metadata source files live in this default package directory. You can configure additional package directories in the `sfdx-project.json` file.
-- **`config/`** - Scratch org definitions and project settings
-- **`scripts/`** - Automation scripts for common tasks
-- **`sfdx-project.json`** - Project manifest that defines package directories, namespace, API version, and other project-level settings
+---
 
-See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm).
+## Salesforce Data Model
 
-## Get Started
+The project uses the following custom objects:
 
-Ready to start developing? The [Get Started with Salesforce DX](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_get_started_dx.htm) guide walks you through your first project, from creating a scratch org to creating a simple Apex class or LWC to deploying your code to a sandbox.
+| Object | Purpose |
+|---|---|
+| Event__c | Stores event information and event status |
+| Client__c | Stores client contact and address information |
+| Vendor__c | Stores vendor and service information |
+| Venue__c | Stores venue information and availability |
+| Feedback__c | Stores client/event feedback and ratings |
+| EventVendor__c / Event_Vendor__c | Provides the event-vendor relationship structure |
 
-## Common Salesforce CLI Commands
+### Important Relationships
 
-Here are common CLI commands that you'll use the most:
+- Event → Client
+- Event → Venue
+- Feedback → Event
+- Feedback → Client
+- Event → Vendor through the Event Vendor relationship structure
 
-- `sf org login web`: Authorize an org
-- `sf org open`: Open your org in a browser
-- `sf org create scratch`: Create a scratch org
-- `sf project deploy start`: Deploy metadata to your org
-- `sf project retrieve start`: Retrieve metadata from your org
-- `sf template generate <artifact>`: Scaffold new components, such as Apex classes and triggers, LWC components, Lightning apps, and more
-- `sf apex <command>`: Run Apex tests, run anonymous Apex blocks, and view logs
-- `sf data <command>`: Work with test data
-- `sf alias <command>`: Manage org aliases
-- `sf config <command>`: Configure CLI settings
+---
 
-## Use Agentforce Vibes to Build Lightning Apps
+## Automation and Backend Development
 
-Transform your ideas into custom Lightning apps that extend CRM workflows directly in Lightning Experience. Through natural conversations with Agentforce Vibes, implement custom objects and fields, complex business logic, and dynamic UI components. See [Build a Lightning App Using Agentforce Vibes](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/lexapp-overview.html).
+### Validation Rule
 
-## Additional Resources
+**Email_Valid_Address**
 
-- [Agentforce Vibes Developer Guide](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/einstein-overview.html)
-- [Salesforce CLI Installation Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
-- [Salesforce CLI Plugin Development Guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/conceptual-overview.html)
-- [Salesforce VS Code Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
+Validates Client email addresses before the record is saved.
 
+### Flow
+
+**Client_Reminder_3_Days_Before**
+
+A record-triggered Flow with a scheduled path that sends a reminder three days before the Event Date for qualifying confirmed events.
+
+### Approval Process
+
+**Event Cancellation Request Notification**
+
+Provides an approval workflow for event cancellation requests and uses an email notification for the relevant Event Coordinator.
+
+### Apex Classes
+
+- `VenueStatusHelper`
+- `BatchCompleteEvents`
+- `ScheduleCompleteEvents`
+
+### Apex Triggers
+
+- `EventTrigger13`
+- `PreventDoubleBooking`
+
+The Apex implementation supports venue availability updates, prevention of duplicate venue bookings, and automatic completion of past events.
+
+---
+
+## Lightning App
+
+The project includes a custom Lightning App:
+
+**Event Planner**
+
+The application provides centralized access to the main EventForce modules:
+
+- Events
+- Clients
+- Vendors
+- Venues
+- Feedback
+
+---
+
+## Reports and Dashboard
+
+The project includes reporting and dashboard functionality for operational monitoring.
+
+### Upcoming Events by Month
+
+The report is designed to organize upcoming event information including event name, date, type, client, venue, and budget.
+
+### EventForce Operations Dashboard
+
+The dashboard provides a visual summary of upcoming event activity using the project reporting data.
+
+---
+
+## Security
+
+The EventForce implementation includes Salesforce security configuration using:
+
+### Profiles
+
+- Event Admin
+- Event Coordinator
+- Vendor Manager
+- Client
+
+### Roles
+
+- Event Admin
+- Event Coordinator
+- Vendor Manager
+- Client
+
+### Permission Set
+
+- Feedback Manager
+
+### Record Access
+
+The Event object uses restricted record access together with sharing configuration for controlled access.
+
+---
+
+## Project Phases
+
+The repository is organized according to the five project phases.
+
+### Phase 1 – Requirement Analysis
+
+Defines the project scope, objectives, business entities, data architecture, relationships, and functional requirements.
+
+### Phase 2 – Backend Development
+
+Implements validation rules, Flow automation, approval processing, Apex classes, and Apex triggers.
+
+### Phase 3 – UI/UX Development & Customization
+
+Implements the Lightning App, module navigation, reports, and dashboard functionality.
+
+### Phase 4 – Data Migration, Testing & Security
+
+Covers data migration, user access, profiles, roles, permission sets, sharing, and functional testing.
+
+### Phase 5 – Deployment, Documentation & Maintenance
+
+Covers deployment preparation, version control, documentation, troubleshooting, and ongoing maintenance.
+
+---
+
+## Repository Structure
+
+```text
+EventForce/
+│
+├── phase-1-requirement-analysis/
+├── phase-2-backend-development/
+├── phase-3-ui-ux-customization/
+├── phase-4-data-migration-testing-security/
+├── phase-5-deployment-documentation-maintenance/
+│
+├── force-app/
+│   └── main/
+│       └── default/
+│           ├── applications/
+│           ├── approvalProcesses/
+│           ├── classes/
+│           ├── flows/
+│           ├── objects/
+│           ├── permissionsets/
+│           ├── profiles/
+│           ├── roles/
+│           └── triggers/
+│
+├── config/
+├── scripts/
+Technologies Used
+Salesforce Lightning Platform
+Salesforce Custom Objects
+Salesforce Flows
+Salesforce Approval Processes
+Apex
+Salesforce Profiles and Roles
+Permission Sets
+Reports and Dashboards
+Salesforce DX
+Git
+GitHub
+Development Environment
+
+The EventForce Management System was developed and tested in a Salesforce Developer Edition environment.
+
+The project source metadata is maintained using a Salesforce DX project structure and Git version control.
+
+Actual production deployment was outside the scope of the academic implementation.
+
+Version Control
+
+The project is maintained using Git and GitHub.
+
+The repository contains the retrieved Salesforce metadata together with documentation for all five implementation phases.
+
+Project Outcome
+
+The EventForce Management System demonstrates how Salesforce can be used to build an integrated event-management solution combining structured data, automation, business logic, security, reporting, and user-interface customization.
+
+The repository provides both the Salesforce source metadata and phase-wise project documentation for review and maintenance.
+
+Repository
+
+GitHub:
+
+https://github.com/pratiksha-dot/Nm-project-Event-management-system
+├── sfdx-project.json
+├── package.json
+└── README.md
