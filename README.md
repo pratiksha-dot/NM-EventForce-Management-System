@@ -1,235 +1,369 @@
-# EventForce Management System
+# EventForce Management System --- Salesforce Implementation
 
-## Salesforce Implementation Project
+> A Salesforce CRM solution for centralizing and automating event
+> planning operations, including event scheduling, client management,
+> venue reservations, vendor coordination, cancellation approvals,
+> reminders, feedback, reporting, and security.
 
-EventForce Management System is a Salesforce-based event management solution developed to organize and manage events, clients, vendors, venues, and feedback through a centralized CRM platform.
+## Project & Institution Details
 
-The project demonstrates Salesforce data modeling, automation, Apex development, Lightning App customization, security configuration, testing, reporting, and Git-based version control.
+  -----------------------------------------------------------------------
+  Item                                Details
+  ----------------------------------- -----------------------------------
+  **Project Title**                   EventForce Management System --
+                                      Salesforce Implementation
 
----
+  **Institution**                     Alpha College of Engineering,
+                                      Thirumazhisai, Chennai
 
-## Project Objectives
+  **Team ID**                         `6ab4d4f2b5170a9b58b51c5d`
 
-The main objectives of the EventForce Management System are:
+  **Platform**                        Salesforce CRM / Developer Edition
+  -----------------------------------------------------------------------
 
-- Manage event information in a centralized Salesforce application.
-- Maintain client, vendor, venue, and feedback records.
-- Establish relationships between the major business entities.
-- Automate important event-management activities.
-- Prevent invalid data and duplicate venue bookings.
-- Manage event cancellation requests through an approval process.
-- Provide reminders for upcoming confirmed events.
-- Automatically update past event statuses.
-- Control user access through Salesforce security features.
-- Provide reports and dashboards for operational monitoring.
+### Team Members
 
----
+  Role          Student
+  ------------- -------------
+  Team Lead     Pratiksha S
+  Team Member   Sowmiya A
+  Team Member   Shalini A
+  Team Member   Aswin S
+  Team Member   Lokesh J
+
+## Project Overview
+
+The EventForce Management System is a Salesforce-based CRM solution
+designed to centralize and streamline event planning and management
+operations.
+
+The system manages Events, Clients, Venues, Vendors, Event--Vendor
+assignments, Feedback, and event cancellations. It combines Salesforce
+custom objects, relationships, validation rules, formula fields, Flows,
+Approval Processes, Apex Triggers and Classes, Reports, Dashboards, and
+role-based security.
+
+## Objectives
+
+-   Centralize event, client, venue, vendor, and feedback information.
+-   Streamline event booking and venue reservation.
+-   Prevent venue double bookings.
+-   Automate event reminders.
+-   Provide a controlled event cancellation approval process.
+-   Improve stakeholder coordination.
+-   Capture and manage client feedback.
+-   Provide operational reports and dashboards.
+-   Maintain controlled access through Salesforce security.
+-   Support data migration through the Salesforce Data Import Wizard.
+
+## Key Features
+
+### Event Management
+
+Manages Event Name, Event Type, Event Date, Event Status, Event Budget,
+Client, and Venue.
+
+### Client Management
+
+Maintains client name, email, phone, address, country, and city.
+
+### Venue Management
+
+Maintains venue address, location, capacity, and availability status.
+Apex logic supports venue availability validation and double-booking
+prevention.
+
+### Vendor Management
+
+Maintains vendor details, service type, contact information, and status.
+The `EventVendor` junction object supports the Event--Vendor
+many-to-many relationship.
+
+### Feedback Management
+
+Stores client ratings and comments and links feedback to Events and
+Clients.
+
+### Automation
+
+Uses Salesforce Flows for event reminders and process updates.
+
+### Cancellation Approval
+
+Uses an Approval Process for controlled event cancellation requests,
+notifications, and status updates.
+
+## System Architecture
+
+``` text
+Users / Event Team
+        |
+        v
+Salesforce Lightning App
+        |
+        v
++-----------------------------+
+|       EventForce CRM        |
++-----------------------------+
+        |
+        +-----------------------------+
+        |                             |
+        v                             v
+ Custom Objects                 Automation
+        |                             |
+        |                    +--------+--------+
+        |                    |        |        |
+        v                    v        v        v
+ Event                    Flows   Approval   Apex
+ Client
+ Vendor
+ Venue
+ Feedback
+ EventVendor
+        |
+        v
+ Reports & Dashboards
+        |
+        v
+ Operational Monitoring
+```
 
 ## Salesforce Data Model
 
-The project uses the following custom objects:
+  Object             Purpose
+  ------------------ ---------------------------------------------------------
+  `Event__c`         Event information, status, date, type, and budget
+  `Client__c`        Client information and contact details
+  `Vendor__c`        Vendor details, services, and status
+  `Venue__c`         Venue information, capacity, location, and availability
+  `Feedback__c`      Client ratings and comments
+  `EventVendor__c`   Junction object connecting Events and Vendors
 
-| Object | Purpose |
-|---|---|
-| Event__c | Stores event information and event status |
-| Client__c | Stores client contact and address information |
-| Vendor__c | Stores vendor and service information |
-| Venue__c | Stores venue information and availability |
-| Feedback__c | Stores client/event feedback and ratings |
-| EventVendor__c / Event_Vendor__c | Provides the event-vendor relationship structure |
+### Relationships
 
-### Important Relationships
+``` text
+Event ───────────────> Client
+  |
+  └──────────────────> Venue
 
-- Event → Client
-- Event → Venue
-- Feedback → Event
-- Feedback → Client
-- Event → Vendor through the Event Vendor relationship structure
+Event <──── EventVendor ────> Vendor
 
----
+Feedback ────────────> Event
+Feedback ────────────> Client
+```
 
-## Automation and Backend Development
+## Automation & Business Logic
 
-### Validation Rule
+### Salesforce Flows
 
-**Email_Valid_Address**
-
-Validates Client email addresses before the record is saved.
-
-### Flow
-
-**Client_Reminder_3_Days_Before**
-
-A record-triggered Flow with a scheduled path that sends a reminder three days before the Event Date for qualifying confirmed events.
+-   Event reminders
+-   Process updates
+-   Feedback notifications
+-   Approval-related updates
 
 ### Approval Process
 
-**Event Cancellation Request Notification**
+``` text
+Cancellation Request
+        ↓
+Approval Process
+        ↓
+Approved / Rejected
+        ↓
+Event Status Update
+        ↓
+Notifications
+```
 
-Provides an approval workflow for event cancellation requests and uses an email notification for the relevant Event Coordinator.
+### Validation Rules
 
-### Apex Classes
+Validation Rules maintain data quality, including client email
+validation.
 
-- `VenueStatusHelper`
-- `BatchCompleteEvents`
-- `ScheduleCompleteEvents`
+### Formula Field
 
-### Apex Triggers
+The Event Budget is calculated automatically from Event Type.
 
-- `EventTrigger13`
-- `PreventDoubleBooking`
+### Apex
 
-The Apex implementation supports venue availability updates, prevention of duplicate venue bookings, and automatic completion of past events.
+Advanced logic includes venue availability updates, double-booking
+prevention, batch processing of completed events, and scheduled
+processing. The documented implementation includes `VenueStatusHelper`,
+`PreventDoubleBooking`, `BatchCompleteEvents`, and
+`ScheduleCompleteEvents`.
 
----
+## Security & Access Control
 
-## Lightning App
+The system uses:
 
-The project includes a custom Lightning App:
+-   Profiles
+-   Roles
+-   Permission Sets
+-   Organization-Wide Defaults (OWD)
+-   Sharing Rules
+-   Object and field permissions
 
-**Event Planner**
+Documented roles include Event Administrator, Event Coordinator, Vendor
+Manager, and Client.
 
-The application provides centralized access to the main EventForce modules:
+## Reports & Dashboards
 
-- Events
-- Clients
-- Vendors
-- Venues
-- Feedback
+The system provides operational reporting including:
 
----
+-   Upcoming Events by Month
+-   Event schedules
+-   Vendor activities
+-   Event budgets
+-   Event performance
+-   Client feedback
+-   EventForce Operations Dashboard
 
-## Reports and Dashboard
+## Project Development Phases
 
-The project includes reporting and dashboard functionality for operational monitoring.
+### Phase 1 --- Requirement Analysis & Planning
 
-### Upcoming Events by Month
+Defined the problem statement, stakeholders, requirements, customer
+journey, data flow, technology stack, and solution architecture.
 
-The report is designed to organize upcoming event information including event name, date, type, client, venue, and budget.
+### Phase 2 --- Backend Development & Configurations
 
-### EventForce Operations Dashboard
+Implemented custom objects, fields, relationships, formula fields,
+validation rules, Flows, Approval Process, Apex Classes, Apex Triggers,
+Batch Apex, and Scheduled Apex.
 
-The dashboard provides a visual summary of upcoming event activity using the project reporting data.
+### Phase 3 --- UI/UX Development & Customization
 
----
+Configured the Event Planner Lightning App, navigation items, object
+tabs, page layouts, reports, and EventForce Operations Dashboard.
 
-## Security
+### Phase 4 --- Data Migration, Testing & Security
 
-The EventForce implementation includes Salesforce security configuration using:
+Performed Data Import Wizard migration, pre-validation, user creation,
+Profiles, Roles, Permission Sets, Sharing Rules, OWD configuration, and
+functional/security testing.
 
-### Profiles
+### Phase 5 --- Deployment, Documentation & Maintenance
 
-- Event Admin
-- Event Coordinator
-- Vendor Manager
-- Client
+The project was developed and tested in a Salesforce Developer Edition
+for academic purposes. Production deployment was not performed. The
+documentation describes the deployment and maintenance approach for a
+future real-world implementation.
 
-### Roles
+## Screenshots
 
-- Event Admin
-- Event Coordinator
-- Vendor Manager
-- Client
+Store your screenshots in the repository as:
 
-### Permission Set
+``` text
+screenshots/
+├── Phase2/
+├── Phase3/
+└── Phase4/
+```
 
-- Feedback Manager
+### Phase 2 --- Backend Development & Configuration
 
-### Record Access
+Custom objects, fields, relationships, formula fields, validation rules,
+approval processes, Flows, and Apex.
 
-The Event object uses restricted record access together with sharing configuration for controlled access.
+[View Phase 2 Screenshots](screenshots/Phase2/)
 
----
+### Phase 3 --- UI/UX Development & Customization
 
-## Project Phases
+Lightning App, navigation, tabs, layouts, reports, and dashboard.
 
-The repository is organized according to the five project phases.
+[View Phase 3 Screenshots](screenshots/Phase3/)
 
-### Phase 1 – Requirement Analysis
+### Phase 4 --- Data Migration, Testing & Security
 
-Defines the project scope, objectives, business entities, data architecture, relationships, and functional requirements.
+Data Import Wizard, imported records, Profiles, Roles, Permission Sets,
+Sharing Rules, OWD, and testing evidence.
 
-### Phase 2 – Backend Development
+[View Phase 4 Screenshots](screenshots/Phase4/)
 
-Implements validation rules, Flow automation, approval processing, Apex classes, and Apex triggers.
+## Testing
 
-### Phase 3 – UI/UX Development & Customization
+Testing covered:
 
-Implements the Lightning App, module navigation, reports, and dashboard functionality.
+  Area                        Validation
+  --------------------------- ------------------------------------------
+  Data Accuracy               Records and field values
+  Automation                  Flows, reminders, approvals, and updates
+  Venue Validation            Availability and double-booking logic
+  Security                    User access and permissions
+  Reports                     Reports and dashboard information
+  Operational Functionality   Core event-management workflows
 
-### Phase 4 – Data Migration, Testing & Security
+## Advantages
 
-Covers data migration, user access, profiles, roles, permission sets, sharing, and functional testing.
+-   Centralized event-management data
+-   Reduced manual processing
+-   Automated reminders and processes
+-   Venue double-booking prevention
+-   Controlled cancellation workflow
+-   Better operational visibility
+-   Role-based security
+-   Improved data quality
+-   Scalable Salesforce platform
 
-### Phase 5 – Deployment, Documentation & Maintenance
+## Limitations
 
-Covers deployment preparation, version control, documentation, troubleshooting, and ongoing maintenance.
+-   Developed using Salesforce Developer Edition for academic purposes.
+-   Production deployment was not performed.
+-   Real-world deployment may require sandbox environments and
+    deployment tooling.
+-   Flows, Apex, Approval Processes, validation rules, and sharing
+    settings require ongoing maintenance.
+-   Production deployment would require appropriate Apex test classes
+    and validation.
 
----
+## Future Scope
 
-## Repository Structure
+-   Production Salesforce deployment
+-   Advanced event automation
+-   Enhanced vendor management
+-   Advanced analytics
+-   Additional reports and dashboards
+-   External integrations
+-   Mobile accessibility
+-   Further optimization of event operations
 
-```text
-EventForce/
+## Project Structure
+
+``` text
+NMProject-EventForce-Management-System/
 │
-├── phase-1-requirement-analysis/
-├── phase-2-backend-development/
-├── phase-3-ui-ux-customization/
-├── phase-4-data-migration-testing-security/
-├── phase-5-deployment-documentation-maintenance/
-│
-├── force-app/
-│   └── main/
-│       └── default/
-│           ├── applications/
-│           ├── approvalProcesses/
-│           ├── classes/
-│           ├── flows/
-│           ├── objects/
-│           ├── permissionsets/
-│           ├── profiles/
-│           ├── roles/
-│           └── triggers/
-│
-├── config/
-├── scripts/
-Technologies Used
-Salesforce Lightning Platform
-Salesforce Custom Objects
-Salesforce Flows
-Salesforce Approval Processes
-Apex
-Salesforce Profiles and Roles
-Permission Sets
-Reports and Dashboards
-Salesforce DX
-Git
-GitHub
-Development Environment
+├── README.md
+├── screenshots/
+│   ├── Phase2/
+│   ├── Phase3/
+│   └── Phase4/
+├── documentation/
+│   └── EventForce-Management-System-Documentation.pdf
+└── other project files/
+```
 
-The EventForce Management System was developed and tested in a Salesforce Developer Edition environment.
+## Technology Stack
 
-The project source metadata is maintained using a Salesforce DX project structure and Git version control.
+  Layer            Technology
+  ---------------- ------------------------------------------------------
+  CRM Platform     Salesforce CRM / Developer Edition
+  User Interface   Salesforce Lightning App
+  Database         Salesforce Custom Objects
+  Business Logic   Salesforce Flows, Formula Fields, Validation Rules
+  Approval         Salesforce Approval Process
+  Automation       Record-Triggered Flows, Apex Triggers
+  Processing       Batch Apex, Scheduled Apex
+  Security         Profiles, Roles, Permission Sets, Sharing Rules, OWD
+  Reporting        Salesforce Reports & Dashboards
+  Data Migration   Salesforce Data Import Wizard
 
-Actual production deployment was outside the scope of the academic implementation.
+## Academic Project
 
-Version Control
+This project was developed as a Salesforce CRM implementation for
+academic purposes and demonstrates Salesforce objects, automation, Apex
+logic, security, data migration, reports, and dashboards for an
+event-management use case.
 
-The project is maintained using Git and GitHub.
+**Alpha College of Engineering, Thirumazhisai, Chennai**
 
-The repository contains the retrieved Salesforce metadata together with documentation for all five implementation phases.
-
-Project Outcome
-
-The EventForce Management System demonstrates how Salesforce can be used to build an integrated event-management solution combining structured data, automation, business logic, security, reporting, and user-interface customization.
-
-The repository provides both the Salesforce source metadata and phase-wise project documentation for review and maintenance.
-
-Repository
-
-GitHub:
-
-https://github.com/pratiksha-dot/Nm-project-Event-management-system
-├── sfdx-project.json
-├── package.json
-└── README.md
+**Team ID:** `6ab4d4f2b5170a9b58b51c5d`
