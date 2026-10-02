@@ -17,6 +17,10 @@ A Salesforce-based **Event Management CRM System** designed to centralize event 
 | **Team Member** | **Aswin.S** | `210123205002` | `aswinx2k23@gmail.com` |
 
 - **Institution:** **Alpha College of Engineering, Thirumazhisai, Chennai**
+- **Naan Mudhalvan Team ID:** `6ab4d5950fc666a751b54176`
+- **Official PDF Report (.pdf):** `EVENTFORCE MANAGEMENT SYSTEM DOCUMENT(IMPORTANT).pdf`
+- **Salesforce Implementation Screenshots:** `Phase 2- part 1(screenshots)`, `Phase 2 -part 2 (Screenshots)`, `Phase 3-(screenshots)`, `Phase 4-(screenshots)`
+- **Live Salesforce Org URL:** `https://orgfarm-28f875b58c-dev-ed.develop.lightning.force.com/`
 - **Project:** **EventForce Management System – Salesforce Implementation**
 - **Platform:** Salesforce CRM / Salesforce Developer Edition / Lightning Experience
 - **Project Type:** Academic Salesforce CRM Implementation
